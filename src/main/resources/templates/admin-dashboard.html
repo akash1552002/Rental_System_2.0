@@ -45,7 +45,7 @@
             background-color: #e0e0e0;
             color: #333;
         }
-.btn-add-machine {
+        .btn-add-machine {
             background-color: #e8f5e9;
             color: #2e7d32;
             padding: 10px 20px;
@@ -64,7 +64,7 @@
             margin: 0 auto 20px auto;
             padding: 0 30px;
         }
-.btn-edit {
+        .btn-edit {
             padding: 5px 10px;
             font-size: 0.9rem;
             font-weight: 600;
@@ -184,6 +184,20 @@
             background-color: #f57c00;
         }
 
+        .btn-view {
+            padding: 5px 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #2e7d32;
+            background-color: #e8f5e9;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: background-color 0.2s ease;
+        }
+        .btn-view:hover {
+            background-color: #dceddc;
+        }
+
         .btn-approve, .btn-reject {
             padding: 5px 10px;
             border-radius: 6px;
@@ -216,6 +230,7 @@
     <div class="nav-buttons">
         <a th:href="@{/admin/add-machine}" class="btn-add-machine">Add Machine</a>
         <a th:href="@{/admin/all-farmers}" class="btn-add-machine" style="background-color: #e8f5e9; color: #2e7d32;">List of Farmers</a>
+
         <form th:action="@{/logout}" method="post">
             <button type="submit" class="btn btn-logout">Logout</button>
         </form>
@@ -231,38 +246,6 @@
 </div>
 <div class="container">
     <div class="col">
-        <!--        <div class="card">-->
-        <!--            <h3>Farmer Verification</h3>-->
-        <!--            <p class="description">Review details and verify farmers to make them eligible for subsidies.</p>-->
-
-        <!--            <div th:if="${unverifiedFarmers.isEmpty()}">-->
-        <!--                <p class="no-data">No farmers are currently pending verification.</p>-->
-        <!--            </div>-->
-
-        <!--            <table th:if="${!unverifiedFarmers.isEmpty()}">-->
-        <!--                <thead>-->
-        <!--                <tr>-->
-        <!--                    <th>Farmer Name</th>-->
-        <!--                    <th>Aadhar</th>-->
-        <!--                    <th>Land (Acres)</th>-->
-        <!--                    <th>Action</th>-->
-        <!--                </tr>-->
-        <!--                </thead>-->
-        <!--                <tbody>-->
-        <!--                <tr th:each="farmer : ${unverifiedFarmers}">-->
-        <!--                    <td th:text="${farmer.name}"></td>-->
-        <!--                    <td th:text="${farmer.aadharNumber}"></td>-->
-        <!--                    <td th:text="${farmer.landSizeInAcres}"></td>-->
-        <!--                    <td>-->
-        <!--                        <form th:action="@{/admin/verify-farmer}" method="post">-->
-        <!--                            <input type="hidden" name="farmerId" th:value="${farmer.id}" />-->
-        <!--                            <button type="submit" class="btn-verify">Verify</button>-->
-        <!--                        </form>-->
-        <!--                    </td>-->
-        <!--                </tr>-->
-        <!--                </tbody>-->
-        <!--            </table>-->
-        <!--        </div>-->
         <div class="card">
             <h3>Farmer Verification</h3>
             <p class="description">Review details and verify farmers to make them eligible for subsidies.</p>
@@ -285,13 +268,7 @@
                     <td th:text="${farmer.farmerCategory}"></td>
 
                     <td>
-                        <a th:if="${farmer.categoryProofUrl}"
-                           th:href="@{${farmer.categoryProofUrl}}"
-                           target="_blank"
-                           style="color: #2e7d32; font-weight: 600;">
-                            View Proof
-                        </a>
-                        <span th:if="${farmer.categoryProofUrl == null}">N/A</span>
+                        <a th:href="@{/admin/farmer-details/{id}(id=${farmer.id})}" class="btn-view">View Details</a>
                     </td>
 
                     <td>
@@ -303,6 +280,9 @@
                 </tr>
                 </tbody>
             </table>
+            <div th:if="${unverifiedFarmers.isEmpty()}">
+                <p class="no-data">No pending verifications.</p>
+            </div>
         </div>
 
         <div class="card">
@@ -324,9 +304,12 @@
                     </td>
                     <td th:text="${m.name}"></td>
                     <td th:text="${m.type}"></td>
-                    <td th:text_="${'₹' + m.rentalPricePerDay}"></td>
-                    <td th:text="${m.available} ? 'Yes' : 'No'"
-                        th:style_="${m.available} ? 'color:green; font-weight: 600;' : 'color:red;'">
+                    <!-- FIX: Removed the underscore from th:text_ -->
+                    <td th:text="${'₹' + m.rentalPricePerDay}"></td>
+<!--                    <td th:text="${m.available} ? 'Yes' : 'No'"-->
+                    <td th:text="${m.available} ? 'Available' : 'Booked'"
+
+                        th:style="${m.available} ? 'color:green; font-weight: 600;' : 'color:red;'">
                     </td>
 
                     <td>
@@ -365,8 +348,8 @@
                 <tr th:each="b : ${bookings}" th:if="${b.status == 'Pending'}">
                     <td th:text="${b.machine.name}"></td>
                     <td th:text="${b.farmer.name}"></td>
-                    <td th:text_="${b.startDate + ' to ' + b.endDate}"></td>
-                    <td th:text_="${'₹' + b.finalAmount}"></td>
+                    <td th:text="${b.startDate + ' to ' + b.endDate}"></td>
+                    <td th:text="${'₹' + b.finalAmount}"></td>
                     <td>
                         <form th:action="@{/booking/approve}" method="post" style="display: inline;">
                             <input type="hidden" name="bookingId" th:value="${b.id}" />
@@ -395,6 +378,7 @@
                     <th>Machine</th>
                     <th>Farmer</th>
                     <th>Dates</th>
+                    <th>Final Price</th>
                     <th>Status</th>
                 </tr>
                 </thead>
@@ -402,9 +386,10 @@
                 <tr th:each="b : ${bookings}" th:if="${b.status != 'Pending'}">
                     <td th:text="${b.machine.name}"></td>
                     <td th:text="${b.farmer.name}"></td>
-                    <td th:text_="${b.startDate + ' to ' + b.endDate}"></td>
+                    <td th:text="${b.startDate + ' to ' + b.endDate}"></td>
+                    <td th:text="${'₹' + b.finalAmount}"></td>
                     <td th:text="${b.status}"
-                        th:style_="${b.status == 'Approved' ? 'color:green; font-weight: 600;' : 'color:red;'}">
+                        th:style="${b.status == 'Approved' ? 'color:green; font-weight: 600;' : 'color:red;'}">
                     </td>
                 </tr>
                 </tbody>

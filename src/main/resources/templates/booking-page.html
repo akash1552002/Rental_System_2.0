@@ -1,3 +1,4 @@
+<!--booking-page.html:-->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -352,7 +353,8 @@
 
             // 4. Calculate the number of days (inclusive)
             const diffTime = Math.abs(endDate - startDate);
-            const totalDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+            // FIX: Changed Math.ceil to Math.round to prevent floating point errors
+            const totalDays = Math.round(diffTime / (1000 * 60 * 60 * 24)) + 1;
 
             // 5. Calculate total price
             const totalPrice = totalDays * perDayPrice;

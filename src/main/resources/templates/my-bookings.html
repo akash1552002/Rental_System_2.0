@@ -140,9 +140,10 @@
                 <td th:text="${b.machine.owner.name}"></td>
                 <td th:text="${b.startDate}"></td>
                 <td th:text="${b.endDate}"></td>
-                <td th:text_="${'₹' + b.finalAmount}"></td>
+                <!-- FIX IS HERE: Changed th:text_ to th:text -->
+                <td th:text="${'₹' + b.finalAmount}"></td>
                 <td th:text="${b.status}"
-                    th:style_="${b.status == 'Approved' ? 'color:green; font-weight: 600;' : (b.status == 'Rejected' ? 'color:red;' : 'color:orange;')}">
+                    th:style="${b.status == 'Approved' ? 'color:green; font-weight: 600;' : (b.status == 'Rejected' ? 'color:red;' : 'color:orange;')}">
                 </td>
             </tr>
             </tbody>
