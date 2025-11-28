@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Payment - IndiFarm</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f1f3f6; margin: 0; padding: 0; color: #333; }
+
+        .navbar { background: #fff; padding: 15px 30px; border-bottom: 1px solid #ddd; display: flex; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: bold; color: #2e7d32; text-decoration: none; }
+
+        .container { display: flex; max-width: 1100px; margin: 20px auto; gap: 20px; padding: 0 10px; }
+
+        /* Left Side: Payment Options */
+        .payment-section { flex: 2; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-radius: 4px; overflow: hidden; }
+        .header { background: #2e7d32; color: #fff; padding: 15px 20px; font-weight: 600; font-size: 1.1rem; }
+
+        .option-group { border-bottom: 1px solid #f0f0f0; }
+        .option-label { display: flex; align-items: center; padding: 20px; cursor: pointer; transition: background 0.2s; }
+        .option-label:hover { background-color: #f9f9f9; }
+        .option-label input { margin-right: 15px; transform: scale(1.2); accent-color: #2e7d32; }
+        .option-text { font-weight: 500; font-size: 1rem; }
+
+        /* Payment details (hidden by default) */
+        .payment-details { display: none; padding: 0 20px 20px 52px; color: #666; font-size: 0.9rem; }
+
+        /* Specific inputs styling */
+        .input-field {
+            width: 100%; max-width: 300px; padding: 10px; margin-top: 10px;
+            border: 1px solid #ccc; border-radius: 4px; font-size: 1rem;
+        }
+        .error-text { color: red; font-size: 0.85rem; display: none; margin-top: 5px; }
+
+        /* Right Side: Price Details */
+        .summary-section { flex: 1; background: #fff; height: fit-content; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-radius: 4px; }
+        .summary-header { padding: 15px 20px; border-bottom: 1px solid #f0f0f0; color: #878787; font-weight: 600; text-transform: uppercase; }
+        .summary-row { display: flex; justify-content: space-between; padding: 15px 20px; font-size: 1rem; }
+        .total-row { border-top: 1px dashed #e0e0e0; padding: 20px; font-weight: 600; font-size: 1.2rem; display: flex; justify-content: space-between; border-bottom: 1px dashed #e0e0e0; }
+        .savings { color: #388e3c; font-size: 0.9rem; padding: 15px 20px; border-top: 1px solid #f0f0f0; font-weight: 500; }
+
+        .btn-pay { width: 100%; background: #fb641b; color: #fff; padding: 15px; border: none; font-size: 1.1rem; font-weight: 600; cursor: pointer; text-transform: uppercase; transition: background 0.3s; }
+        .btn-pay:hover { background: #f4511e; }
+        .btn-pay:disabled { background: #ccc; cursor: not-allowed; }
+
+        /* Loading Overlay */
+        #loading-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.9); z-index: 1000;
+            display: none; justify-content: center; align-items: center; flex-direction: column;
+        }
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #2e7d32; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* OTP Modal */
+        #otp-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 1001;
+            display: none; justify-content: center; align-items: center;
+        }
+        .otp-box {
+            background: #fff; padding: 30px; border-radius: 8px; width: 350px; text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .otp-input {
+            width: 100%; padding: 12px; margin: 20px 0; font-size: 1.2rem; text-align: center; letter-spacing: 5px; border: 1px solid #ccc; border-radius: 4px;
+        }
+        .btn-verify {
+            background: #2e7d32; color: #fff; border: none; padding: 10px 20px; font-size: 1rem; border-radius: 4px; cursor: pointer; width: 100%;
+        }
+        .otp-sent-text { font-size: 0.9rem; color: #666; margin-bottom: 10px; }
+
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <a href="#" class="logo">🌾 IndiFarm Secure Payment</a>
+</nav>
+
+<div class="container">
+    <!-- Left: Payment Options -->
+    <div class="payment-section">
+        <div class="header">Select Payment Method</div>
+
+        <form th:action="@{/booking/confirm}" method="post" id="paymentForm">
+            <!-- Hidden inputs to pass data -->
+            <input type="hidden" name="machineId" th:value="${machine.id}" />
+            <input type="hidden" name="startDate" th:value="${startDate}" />
+            <input type="hidden" name="endDate" th:value="${endDate}" />
+
+            <!-- 1. UPI Option -->
+            <div class="option-group">
+                <label class="option-label" onclick="showDetails('upi-details')">
+                    <input type="radio" name="paymentMode" value="UPI" id="radio-upi" checked>
+                    <span class="option-text">UPI (PhonePe / GPay / Paytm)</span>
+                </label>
+                <div class="payment-details" id="upi-details" style="display: block;">
+                    <p>Enter your UPI ID to pay:</p>
+                    <input type="text" id="upi-id" class="input-field" placeholder="e.g. mobileNumber@upi" required>
+                    <div class="error-text" id="upi-error">Please enter a valid UPI ID</div>
+                </div>
+            </div>
+
+            <!-- 2. Card Option -->
+            <div class="option-group">
+                <label class="option-label" onclick="showDetails('card-details')">
+                    <input type="radio" name="paymentMode" value="CARD" id="radio-card">
+                    <span class="option-text">Credit / Debit / ATM Card</span>
+                </label>
+                <div class="payment-details" id="card-details">
+                    <input type="text" id="card-number" class="input-field" placeholder="Card Number (16 digits)" maxlength="16">
+                    <div style="display: flex; gap: 10px; max-width: 300px;">
+                        <input type="text" id="card-expiry" class="input-field" placeholder="MM/YY" maxlength="5">
+                        <input type="password" id="card-cvv" class="input-field" placeholder="CVV" maxlength="3">
+                    </div>
+                    <div class="error-text" id="card-error">Please enter valid card details</div>
+                </div>
+            </div>
+
+            <!-- 3. Net Banking Option -->
+            <div class="option-group">
+                <label class="option-label" onclick="showDetails('net-details')">
+                    <input type="radio" name="paymentMode" value="NET_BANKING" id="radio-net">
+                    <span class="option-text">Net Banking</span>
+                </label>
+                <div class="payment-details" id="net-details">
+                    <select class="input-field" id="bank-select">
+                        <option value="">Select Bank</option>
+                        <option value="HDFC">HDFC Bank</option>
+                        <option value="SBI">SBI</option>
+                        <option value="ICICI">ICICI Bank</option>
+                        <option value="AXIS">Axis Bank</option>
+                    </select>
+                    <div class="error-text" id="net-error">Please select a bank</div>
+                </div>
+            </div>
+
+            <!-- 4. COD Option -->
+            <div class="option-group">
+                <label class="option-label" onclick="showDetails('cod-details')">
+                    <input type="radio" name="paymentMode" value="CASH" id="radio-cod">
+                    <span class="option-text">Cash on Delivery (COD)</span>
+                </label>
+                <div class="payment-details" id="cod-details">
+                    <p style="background-color: #e8f5e9; padding: 10px; border-radius: 4px; color: #2e7d32;">
+                        ✅ Valid for this booking. Pay cash directly to the owner upon machine delivery.
+                    </p>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Right: Order Summary -->
+    <div class="summary-section">
+        <div class="summary-header">Price Details</div>
+
+        <div class="summary-row">
+            <span>Machine Rent (<span th:text="${days}"></span> Days)</span>
+            <span th:text="${'₹' + totalAmount}"></span>
+        </div>
+
+        <div class="summary-row" style="color: #388e3c;">
+            <span>Subsidy / Discount</span>
+            <span th:text="${'- ₹' + subsidyAmount}"></span>
+        </div>
+
+        <div class="summary-row">
+            <span>Platform Fee</span>
+            <span style="color: #388e3c;">FREE</span>
+        </div>
+
+        <div class="total-row">
+            <span>Total Payable</span>
+            <span th:text="${'₹' + finalAmount}"></span>
+        </div>
+
+        <div class="savings" th:if="${subsidyAmount > 0}">
+            You will save <span th:text="${'₹' + subsidyAmount}"></span> on this booking!
+        </div>
+
+        <button type="button" onclick="validateAndPay()" class="btn-pay">Pay & Confirm</button>
+    </div>
+</div>
+
+<!-- Simulated Loading Screen -->
+<div id="loading-overlay">
+    <div class="spinner"></div>
+    <h3 style="margin-top: 20px; color: #2e7d32;">Processing Payment...</h3>
+    <p>Please do not close this window.</p>
+</div>
+
+<!-- OTP Modal -->
+<div id="otp-modal">
+    <div class="otp-box">
+        <h3>Verify Payment</h3>
+        <p class="otp-sent-text">An OTP has been sent to your registered mobile number.</p>
+        <p style="font-weight: bold; color: #2e7d32; margin-top:0;">Use OTP: <span id="generated-otp">1234</span></p>
+        <input type="text" id="otp-input" class="otp-input" placeholder="Enter OTP" maxlength="4">
+        <div class="error-text" id="otp-error" style="text-align: center; margin-bottom: 10px;">Incorrect OTP!</div>
+        <button class="btn-verify" onclick="verifyOtp()">Verify & Book</button>
+    </div>
+</div>
+
+<script>
+    let currentOtp = "1234"; // Simulated OTP
+
+    // --- Helper for Expiry Formatting ---
+    document.getElementById('card-expiry').addEventListener('input', function(e) {
+        let input = e.target.value;
+        input = input.replace(/\D/g, '');
+        if (input.length > 2) {
+            input = input.substring(0, 2) + '/' + input.substring(2);
+        }
+        e.target.value = input;
+    });
+
+    // Helper to toggle visibility of detail sections
+    function showDetails(id) {
+        document.querySelectorAll('.payment-details').forEach(el => el.style.display = 'none');
+        document.getElementById(id).style.display = 'block';
+        document.querySelectorAll('.error-text').forEach(el => el.style.display = 'none');
+    }
+
+    function validateAndPay() {
+        const selectedMode = document.querySelector('input[name="paymentMode"]:checked').value;
+        let isValid = true;
+
+        document.querySelectorAll('.error-text').forEach(el => el.style.display = 'none');
+
+        // Validation Logic
+        if (selectedMode === 'UPI') {
+            const upiId = document.getElementById('upi-id').value;
+            if (!upiId.includes('@')) {
+                document.getElementById('upi-error').style.display = 'block';
+                isValid = false;
+            }
+        }
+        else if (selectedMode === 'CARD') {
+            const num = document.getElementById('card-number').value;
+            const expiry = document.getElementById('card-expiry').value;
+            const cvv = document.getElementById('card-cvv').value;
+
+            if (num.length < 16 || expiry.length < 5 || cvv.length < 3) {
+                document.getElementById('card-error').style.display = 'block';
+                isValid = false;
+            }
+        }
+        else if (selectedMode === 'NET_BANKING') {
+            if (document.getElementById('bank-select').value === "") {
+                document.getElementById('net-error').style.display = 'block';
+                isValid = false;
+            }
+        }
+
+        if (isValid) {
+            if (selectedMode === 'CASH') {
+                // Direct booking for COD
+                submitBooking();
+            } else {
+                // Show OTP Modal for online payments
+                showOtpModal();
+            }
+        }
+    }
+
+    function showOtpModal() {
+        // Generate random 4 digit OTP for fun
+        currentOtp = Math.floor(1000 + Math.random() * 9000);
+        document.getElementById('generated-otp').textContent = currentOtp;
+
+        document.getElementById('otp-modal').style.display = 'flex';
+        // Simulate sending SMS
+        alert("Simulated SMS: Your OTP for IndiFarm is " + currentOtp);
+    }
+
+    function verifyOtp() {
+        const enteredOtp = document.getElementById('otp-input').value;
+        if (enteredOtp == currentOtp) {
+            document.getElementById('otp-modal').style.display = 'none';
+            submitBooking();
+        } else {
+            document.getElementById('otp-error').style.display = 'block';
+        }
+    }
+
+    function submitBooking() {
+        document.getElementById('loading-overlay').style.display = 'flex';
+        // Simulate network delay
+        setTimeout(() => {
+            document.getElementById('paymentForm').submit();
+        }, 2000);
+    }
+</script>
+
+</body>
+</html>
