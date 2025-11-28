@@ -76,7 +76,8 @@ public class AuthController {
     @PostMapping("/register")
     public String registerUser(@Valid @ModelAttribute("registrationRequest") RegistrationRequest registrationRequest,
                                BindingResult bindingResult, // <-- ADDED
-                               @RequestParam("categoryProofFile") MultipartFile categoryProofFile,
+//                               @RequestParam("categoryProofFile") MultipartFile categoryProofFile,
+                               @RequestParam(value = "categoryProofFile", required = false) MultipartFile categoryProofFile,
                                RedirectAttributes redirectAttributes) {
 
         // 1. Manual check for username uniqueness

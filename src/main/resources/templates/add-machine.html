@@ -1,3 +1,175 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title th:text="${pageTitle}">Add Machine</title>-->
+<!--    <style>-->
+<!--        body {-->
+<!--            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;-->
+<!--            margin: 0;-->
+<!--            padding: 0;-->
+<!--            background-color: #f7fdf7;-->
+<!--            color: #333;-->
+<!--        }-->
+
+<!--        /* -&#45;&#45; Navigation Bar -&#45;&#45; */-->
+<!--        .navbar {-->
+<!--            display: flex;-->
+<!--            justify-content: space-between;-->
+<!--            align-items: center;-->
+<!--            padding: 15px 30px;-->
+<!--            background-color: #ffffff;-->
+<!--            border-bottom: 1px solid #ddd;-->
+<!--            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);-->
+<!--            margin-bottom: 30px;-->
+<!--        }-->
+<!--        .navbar .logo {-->
+<!--            font-size: 1.5rem;-->
+<!--            font-weight: bold;-->
+<!--            color: #2e7d32;-->
+<!--            text-decoration: none;-->
+<!--        }-->
+<!--        .navbar .nav-buttons {-->
+<!--            display: flex;-->
+<!--            gap: 10px;-->
+<!--        }-->
+<!--        .btn {-->
+<!--            padding: 10px 20px;-->
+<!--            text-decoration: none;-->
+<!--            border-radius: 8px;-->
+<!--            font-weight: 600;-->
+<!--            cursor: pointer;-->
+<!--            border: none;-->
+<!--        }-->
+<!--        .btn-secondary {-->
+<!--            background-color: #e8f5e9;-->
+<!--            color: #2e7d32;-->
+<!--        }-->
+<!--         .btn-secondary:hover {-->
+<!--             background-color: #dceddc;-->
+<!--         }-->
+<!--        .btn-logout {-->
+<!--            background-color: #e0e0e0;-->
+<!--            color: #333;-->
+<!--        }-->
+
+<!--        /* -&#45;&#45; Main Content -&#45;&#45; */-->
+<!--        .page-header {-->
+<!--            max-width: 600px;-->
+<!--            margin: 0 auto 20px auto;-->
+<!--            padding: 0 30px;-->
+<!--        }-->
+<!--        .page-header h2 {-->
+<!--            margin: 0 0 5px 0;-->
+<!--            color: #2e7d32;-->
+<!--            text-align: center;-->
+<!--        }-->
+
+<!--        /* -&#45;&#45; Card Style -&#45;&#45; */-->
+<!--        .card {-->
+<!--            background-color: #ffffff;-->
+<!--            border-radius: 12px;-->
+<!--            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);-->
+<!--            padding: 25px;-->
+<!--            margin: 0 auto;-->
+<!--            max-width: 600px;-->
+<!--        }-->
+
+<!--        /* -&#45;&#45; Form Styling -&#45;&#45; */-->
+<!--        .form-row {-->
+<!--            margin-bottom: 15px;-->
+<!--        }-->
+<!--        .form-row label {-->
+<!--            display: block;-->
+<!--            font-weight: 600;-->
+<!--            margin-bottom: 5px;-->
+<!--        }-->
+<!--        .form-row input[type="text"],-->
+<!--        .form-row input[type="number"],-->
+<!--        .form-row input[type="file"],-->
+<!--        .form-row textarea { /* Added textarea */-->
+<!--            width: 100%;-->
+<!--            padding: 12px;-->
+<!--            font-size: 1rem;-->
+<!--            border: 1px solid #ccc;-->
+<!--            border-radius: 8px;-->
+<!--            box-sizing: border-box;-->
+<!--            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;-->
+<!--        }-->
+
+<!--        /* Button Styling */-->
+<!--        .btn-submit {-->
+<!--            width: 100%;-->
+<!--            padding: 12px;-->
+<!--            font-size: 1rem;-->
+<!--            font-weight: 600;-->
+<!--            color: white;-->
+<!--            background-color: #ff9800;-->
+<!--            border: none;-->
+<!--            border-radius: 8px;-->
+<!--            cursor: pointer;-->
+<!--            transition: background-color 0.3s ease;-->
+<!--            margin-top: 10px;-->
+<!--        }-->
+<!--        .btn-submit:hover {-->
+<!--            background-color: #f57c00;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<nav class="navbar">-->
+<!--    <a th:href="@{/}" class="logo">🌾 IndiFarm Rental</a>-->
+<!--    <div class="nav-buttons">-->
+<!--        <a th:href="${dashboardUrl}" class="btn btn-secondary">Dashboard</a>-->
+<!--        <form th:action="@{/logout}" method="post">-->
+<!--            <button type="submit" class="btn btn-logout">Logout</button>-->
+<!--        </form>-->
+<!--    </div>-->
+<!--</nav>-->
+
+<!--<div class="page-header">-->
+<!--    <h2 th:text="${pageTitle}">Add New Machine</h2>-->
+<!--</div>-->
+
+<!--<div class="card">-->
+<!--    <form th:action="${formAction}" method="post" th:object="${newMachine}" enctype="multipart/form-data">-->
+
+<!--        <input type="hidden" th:field="*{id}" />-->
+<!--        <div class="form-row">-->
+<!--            <label>Name:</label>-->
+<!--            <input type="text" th:field="*{name}" required/>-->
+<!--        </div>-->
+<!--        <div class="form-row">-->
+<!--            <label>Type (e.g., Tractor, Harvester, Cultivator):</label>-->
+<!--            <input type="text" th:field="*{type}" required/>-->
+<!--        </div>-->
+
+<!--        <div class="form-row">-->
+<!--            <label>Description (Optional):</label>-->
+<!--            <textarea th:field="*{description}" rows="3" placeholder="e.g., 50HP, good for 5-10 acres, 2022 model..."></textarea>-->
+<!--        </div>-->
+
+<!--        <div class="form-row">-->
+<!--            <label>Base Rate/Day (₹):</label>-->
+<!--            <input type="number" th:field="*{rentalPricePerDay}" required/>-->
+<!--        </div>-->
+<!--        <div class="form-row">-->
+<!--            <label>Location (e.g., Bhiwandi, Thane):</label>-->
+<!--            <input type="text" th:field="*{location}" required/>-->
+<!--        </div>-->
+<!--        <div class="form-row">-->
+<!--            <label>Image File:</label>-->
+<!--            <input type="file" name="imageFile" accept="image/png, image/jpeg" />-->
+<!--        </div>-->
+<!--        <button type="submit" class="btn-submit">Save Machine</button>-->
+<!--    </form>-->
+<!--</div>        <button type="submit" class="btn-submit">Add Machine</button>-->
+<!--</form>-->
+<!--</div>-->
+
+<!--</body>-->
+<!--</html>-->
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -87,7 +259,7 @@
         .form-row input[type="text"],
         .form-row input[type="number"],
         .form-row input[type="file"],
-        .form-row textarea { /* Added textarea */
+        .form-row textarea {
             width: 100%;
             padding: 12px;
             font-size: 1rem;
@@ -162,10 +334,13 @@
             <label>Image File:</label>
             <input type="file" name="imageFile" accept="image/png, image/jpeg" />
         </div>
-        <button type="submit" class="btn-submit">Save Machine</button>
+
+        <!-- Dynamic Button Text: "Save Machine" if editing, "Add Machine" if new -->
+        <button type="submit" class="btn-submit"
+                th:text="${newMachine.id != null ? 'Save Machine' : 'Add Machine'}">
+            Submit
+        </button>
     </form>
-</div>        <button type="submit" class="btn-submit">Add Machine</button>
-</form>
 </div>
 
 </body>

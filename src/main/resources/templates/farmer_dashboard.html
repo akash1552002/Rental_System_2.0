@@ -1,388 +1,3 @@
-<!--<!DOCTYPE html>-->
-<!--<html xmlns:th="http://www.thymeleaf.org">-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <title>Farmer Dashboard</title>-->
-<!--    <style>-->
-<!--        body {-->
-<!--            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;-->
-<!--            margin: 0;-->
-<!--            padding: 0;-->
-<!--            background-color: #f7fdf7;-->
-<!--            color: #333;-->
-<!--        }-->
-
-<!--        /* -&#45;&#45; Navigation Bar -&#45;&#45; */-->
-<!--        .navbar {-->
-<!--            display: flex;-->
-<!--            justify-content: space-between;-->
-<!--            align-items: center;-->
-<!--            padding: 15px 30px;-->
-<!--            background-color: #ffffff;-->
-<!--            border-bottom: 1px solid #ddd;-->
-<!--            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);-->
-<!--        }-->
-<!--        .navbar .logo {-->
-<!--            font-size: 1.5rem;-->
-<!--            font-weight: bold;-->
-<!--            color: #2e7d32;-->
-<!--            text-decoration: none;-->
-<!--        }-->
-<!--        .navbar .nav-buttons {-->
-<!--            display: flex;-->
-<!--            align-items: center;-->
-<!--            gap: 10px;-->
-<!--        }-->
-<!--        .btn {-->
-<!--            padding: 10px 20px;-->
-<!--            text-decoration: none;-->
-<!--            border-radius: 8px;-->
-<!--            font-weight: 600;-->
-<!--            cursor: pointer;-->
-<!--            border: none;-->
-<!--            transition: background-color 0.2s ease;-->
-<!--        }-->
-<!--        .btn-primary { /* For Apply Subsidy */-->
-<!--            background-color: #43a047;-->
-<!--            color: white;-->
-<!--        }-->
-<!--        .btn-primary:hover {-->
-<!--            background-color: #2e7d32;-->
-<!--        }-->
-<!--        .btn-secondary { /* For My Bookings */-->
-<!--             background-color: #e8f5e9;-->
-<!--             color: #2e7d32;-->
-<!--        }-->
-<!--         .btn-secondary:hover {-->
-<!--             background-color: #dceddc;-->
-<!--         }-->
-<!--        .btn-logout {-->
-<!--            background-color: #e0e0e0;-->
-<!--            color: #333;-->
-<!--        }-->
-<!--         .btn-logout:hover {-->
-<!--             background-color: #d5d5d5;-->
-<!--         }-->
-
-<!--        /* -&#45;&#45; NEW Hero Section (from index.html) -&#45;&#45; */-->
-<!--        .hero {-->
-<!--            text-align: center;-->
-<!--            padding: 50px 20px 40px 20px; /* Less padding than homepage */-->
-<!--            background-color: #ffffff; /* White background */-->
-<!--            border-bottom: 1px solid #eee;-->
-<!--        }-->
-<!--        .hero .welcome-message {-->
-<!--            font-size: 2rem;-->
-<!--            color: #2e7d32;-->
-<!--            margin: 0 0 10px 0;-->
-<!--        }-->
-<!--        .hero .subsidy-status {-->
-<!--            font-size: 1.1rem;-->
-<!--            color: #555;-->
-<!--            margin-bottom: 30px;-->
-<!--            font-weight: 600;-->
-<!--        }-->
-<!--        .subsidy-eligible { color: #2e7d32; }-->
-<!--        .subsidy-pending { color: #c62828; }-->
-
-<!--        .hero h1 {-->
-<!--            font-size: 2.5rem; /* Slightly smaller */-->
-<!--            color: #2e7d32;-->
-<!--            margin: 0 0 15px 0;-->
-<!--        }-->
-<!--        .hero p {-->
-<!--            font-size: 1.25rem;-->
-<!--            color: #555;-->
-<!--            margin-bottom: 30px;-->
-<!--        }-->
-
-<!--        /* -&#45;&#45; Search Bar -&#45;&#45; */-->
-<!--        .search-bar {-->
-<!--            display: flex;-->
-<!--            justify-content: center;-->
-<!--            gap: 10px;-->
-<!--            padding: 20px;-->
-<!--            background-color: rgba(255, 255, 255, 0.9);-->
-<!--            border-radius: 12px;-->
-<!--            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);-->
-<!--            max-width: 800px;-->
-<!--            margin: 0 auto;-->
-<!--        }-->
-<!--        .search-bar input[type="text"] {-->
-<!--            padding: 15px;-->
-<!--            font-size: 1rem;-->
-<!--            border: 1px solid #ccc;-->
-<!--            border-radius: 8px;-->
-<!--            flex: 1;-->
-<!--        }-->
-<!--        .btn-search {-->
-<!--            background-color: #ff9800;-->
-<!--            color: white;-->
-<!--            font-size: 1rem;-->
-<!--            padding: 15px 30px;-->
-<!--            border-radius: 8px;-->
-<!--            border: none;-->
-<!--            cursor: pointer;-->
-<!--        }-->
-<!--        .btn-search:hover {-->
-<!--            background-color: #f57c00;-->
-<!--        }-->
-
-<!--        /* -&#45;&#45; Category Styles -&#45;&#45; */-->
-<!--        .categories {-->
-<!--            padding: 40px 20px 20px 20px; /* More top padding */-->
-<!--            text-align: center;-->
-<!--            max-width: 1200px;-->
-<!--            margin: 0 auto;-->
-<!--        }-->
-<!--        .categories h2 {-->
-<!--            font-size: 2rem;-->
-<!--            margin-bottom: 30px;-->
-<!--            color: #333;-->
-<!--        }-->
-<!--        .category-grid {-->
-<!--            display: grid;-->
-<!--            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));-->
-<!--            gap: 20px;-->
-<!--            max-width: 1200px;-->
-<!--            margin: 0 auto;-->
-<!--        }-->
-<!--        .category-card {-->
-<!--            background-color: #fff;-->
-<!--            border: 1px solid #eee;-->
-<!--            border-radius: 10px;-->
-<!--            padding: 20px 15px;-->
-<!--            text-decoration: none;-->
-<!--            color: #333;-->
-<!--            font-weight: 600;-->
-<!--            box-shadow: 0 2px 5px rgba(0,0,0,0.05);-->
-<!--            transition: all 0.3s ease;-->
-<!--            cursor: pointer;-->
-<!--        }-->
-<!--        .category-card:hover, .category-card.active {-->
-<!--            transform: translateY(-5px);-->
-<!--            box-shadow: 0 5px 15px rgba(0,0,0,0.1);-->
-<!--            color: #2e7d32;-->
-<!--            border-color: #2e7d32;-->
-<!--        }-->
-<!--        .category-card .icon {-->
-<!--            font-size: 2.5rem;-->
-<!--            margin-bottom: 10px;-->
-<!--            display: block;-->
-<!--        }-->
-
-<!--        /* -&#45;&#45; Machine Grid & Card Styles -&#45;&#45; */-->
-<!--        .results-container {-->
-<!--            max-width: 1200px;-->
-<!--            margin: 30px auto;-->
-<!--            padding: 0 20px;-->
-<!--        }-->
-<!--        .results-header {-->
-<!--            font-size: 1.5rem;-->
-<!--            margin-bottom: 20px;-->
-<!--        }-->
-<!--        .machine-grid {-->
-<!--            display: grid;-->
-<!--            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));-->
-<!--            gap: 20px;-->
-<!--        }-->
-<!--        #no-machines-message {-->
-<!--            display: none;-->
-<!--            text-align: center;-->
-<!--            grid-column: 1 / -1;-->
-<!--            color: #555;-->
-<!--            font-size: 1.1rem;-->
-<!--            padding: 30px;-->
-<!--        }-->
-
-<!--        /* ... All .machine-card styles ... */-->
-<!--        .machine-card {-->
-<!--            background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);-->
-<!--            display: flex; flex-direction: column; overflow: hidden; transition: all 0.3s ease;-->
-<!--        }-->
-<!--        .machine-card:hover { transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); }-->
-<!--        .machine-card img { width: 100%; height: 180px; object-fit: cover; background-color: #eee; }-->
-<!--        .machine-card .card-body { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }-->
-<!--        .machine-card .card-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 10px; color: #333; }-->
-<!--        .machine-card .card-info { font-size: 0.85rem; color: #666; line-height: 1.4; margin-bottom: 15px; }-->
-<!--        .machine-card .card-info strong { font-weight: 500; color: #444; }-->
-<!--        .machine-card .card-price {-->
-<!--            margin-top: auto; padding-top: 15px; border-top: 1px solid #eee; display: flex;-->
-<!--            justify-content: space-between; align-items: center; gap: 10px;-->
-<!--        }-->
-<!--        .machine-card .price-details { text-align: left; }-->
-<!--        .machine-card .price-details .final-rate { font-size: 1rem; font-weight: 600; display: block; }-->
-<!--        .machine-card .price-details .base-rate { text-decoration: line-through; color: #888; font-size: 0.8rem; display: block; }-->
-<!--        .machine-card .price-details .subsidy-save { font-size: 0.8rem; color: #2e7d32; font-weight: 600; display: block; }-->
-<!--        .btn-book {-->
-<!--            padding: 8px 16px; font-size: 0.9rem; border-radius: 6px; background-color: #fff;-->
-<!--            color: #ff9800; border: 1px solid #ff9800; text-align: center; text-decoration: none;-->
-<!--            transition: all 0.2s ease;-->
-<!--        }-->
-<!--        .btn-book:hover { background-color: #ff9800; color: #fff; }-->
-<!--    </style>-->
-<!--</head>-->
-<!--<body>-->
-
-<!--<nav class="navbar">-->
-<!--    <a th:href="@{/}" class="logo">🌾 IndiFarm Rental</a>-->
-<!--    <div class="nav-buttons">-->
-<!--        <a th:href="@{/farmer/dashboard#subsidy-status}" class="btn btn-primary">Apply for Subsidy</a>-->
-<!--        <a th:href="@{/farmer/my-bookings}" class="btn btn-secondary">My Bookings</a>-->
-<!--        <form th:action="@{/logout}" method="post" style="margin: 0;">-->
-<!--            <button type="submit" class="btn btn-logout">Logout</button>-->
-<!--        </form>-->
-<!--    </div>-->
-<!--</nav>-->
-
-<!--<section class="hero">-->
-<!--    <div th:if="${farmer != null}">-->
-<!--        <h2 class="welcome-message">Welcome, <b th:text="${farmer.name}"></b>!</h2>-->
-<!--        <p id="subsidy-status" class="subsidy-status" th:if="${farmer.verified}" th:classappend="subsidy-eligible">-->
-<!--            Subsidy Status: Eligible (Verified, <span th:text="${farmer.landSizeInAcres}"></span> Acres)-->
-<!--        </p>-->
-<!--        <p id="subsidy-status" class="subsidy-status" th:if="${!farmer.verified}" th:classappend="subsidy-pending">-->
-<!--            Subsidy Status: Not Yet Eligible (Pending Verification)-->
-<!--        </p>-->
-<!--    </div>-->
-
-<!--    <h1>Rent the machinery you need, when you need it.</h1>-->
-<!--    <p>Connecting farmers with private owners and government CHCs across Maharashtra.</p>-->
-
-<!--    <div class="search-bar">-->
-<!--        <input type="text" id="machine-search-input" placeholder="e.g., 'Tractor', 'Rotavator'"/>-->
-<!--        <input type="text" id="location-search-input" placeholder="e.g., 'Bhiwandi', 'Thane'"/>-->
-<!--        <button type="button" class="btn btn-search" onclick="applyFilters()">Search</button>-->
-<!--    </div>-->
-<!--</section>-->
-<!--<section class="categories">-->
-<!--    <h2 class="results-header">Browse by Category</h2>-->
-<!--    <div class="category-grid" id="category-grid">-->
-<!--        <th:block th:each="cat : ${categories}">-->
-<!--            <div class="category-card"-->
-<!--                 th:data-category-query="${cat.searchQuery}"-->
-<!--                 onclick="filterByCategory(this)">-->
-<!--                <span class="icon" th:text="${cat.icon}"></span>-->
-<!--                <span th:text="${cat.name}"></span>-->
-<!--            </div>-->
-<!--        </th:block>-->
-<!--    </div>-->
-<!--</section>-->
-
-
-<!--<section class="results-container">-->
-<!--    <h2 class="results-header">Available Machines</h2>-->
-
-<!--    <div class="machine-grid" id="machine-grid-container">-->
-<!--        <div class="machine-card"-->
-<!--             th:each="m : ${machines}" th:if="${m.available}"-->
-<!--             th:data-machine-type="${m.type}"-->
-<!--             th:data-machine-name="${m.name}"-->
-<!--             th:data-machine-location="${m.location}">-->
-
-<!--            <img th:src="${m.imageUrl != null ? m.imageUrl : 'https://i.imgur.com/A83c1pE.jpeg'}" alt="Machine Image" />-->
-<!--            <div class="card-body">-->
-<!--                <div class="card-title">-->
-<!--                    <span th:if="${m.owner.ownerType == 'GOVERNMENT_CHC'}">🏛️</span>-->
-<!--                    <span th:if="${m.owner.ownerType == 'PRIVATE'}">🏠</span>-->
-<!--                    <span th:text="${m.name}">Machine Name</span>-->
-<!--                </div>-->
-<!--                <div class="card-info">-->
-<!--                    <strong>Owner:</strong> <span th:text="${m.owner.name}">Owner Name</span><br/>-->
-<!--                    <strong>Location:</strong> <span th:text="${m.location}">Location</span>-->
-<!--                </div>-->
-<!--                <div class="card-price">-->
-<!--                    <div class="price-details">-->
-<!--                        <span class="base-rate"-->
-<!--                              th:if="${prices[m.id] < m.rentalPricePerDay}"-->
-<!--                              th:text="${'₹' + m.rentalPricePerDay + ' / day'}">-->
-<!--                        </span>-->
-<!--                        <span class="final-rate"-->
-<!--                              th:text="${'₹' + prices[m.id] + ' / day'}">-->
-<!--                        </span>-->
-<!--                        <span class="subsidy-save"-->
-<!--                              th:if="${prices[m.id] < m.rentalPricePerDay}"-->
-<!--                              th:text="${'(Save ₹' + (m.rentalPricePerDay - prices[m.id]) + '!)'}">-->
-<!--                        </span>-->
-<!--                    </div>-->
-<!--                    <a th:href="@{/farmer/book/{id}(id=${m.id})}" class="btn-book">-->
-<!--                        View Details-->
-<!--                    </a>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-
-<!--        <p id="no-machines-message">-->
-<!--            No machines found matching your criteria.-->
-<!--        </p>-->
-<!--    </div>-->
-<!--</section>-->
-
-<!--<script>-->
-<!--    // Store the active category filter-->
-<!--    let activeCategoryQuery = "";-->
-
-<!--    // Function called by category buttons-->
-<!--    function filterByCategory(selectedCategoryElement) {-->
-<!--        // Get the filter word (e.g., "tractor", "cultivator", or "" for "View All")-->
-<!--        activeCategoryQuery = selectedCategoryElement.dataset.categoryQuery.toLowerCase();-->
-
-<!--        // 1. Update active style for category buttons-->
-<!--        document.querySelectorAll('#category-grid .category-card').forEach(card => {-->
-<!--            card.classList.remove('active');-->
-<!--        });-->
-<!--        selectedCategoryElement.classList.add('active');-->
-
-<!--        // 2. Apply all filters-->
-<!--        applyFilters();-->
-<!--    }-->
-
-<!--    // Function called by search button OR category buttons-->
-<!--    function applyFilters() {-->
-<!--        // Get values from search boxes-->
-<!--        const machineQuery = document.getElementById('machine-search-input').value.toLowerCase();-->
-<!--        const locationQuery = document.getElementById('location-search-input').value.toLowerCase();-->
-
-<!--        const allMachineCards = document.querySelectorAll('#machine-grid-container .machine-card');-->
-<!--        const noMachinesMessage = document.getElementById('no-machines-message');-->
-<!--        let machinesFound = false;-->
-
-<!--        // Loop through all machine cards and show/hide them-->
-<!--        allMachineCards.forEach(card => {-->
-<!--            // Get data from the card-->
-<!--            const machineType = (card.dataset.machineType || '').toLowerCase();-->
-<!--            const machineName = (card.dataset.machineName || '').toLowerCase();-->
-<!--            const machineLocation = (card.dataset.machineLocation || '').toLowerCase();-->
-
-<!--            // Check if card matches ALL active filters-->
-<!--            const categoryMatch = (activeCategoryQuery === "" || machineType.includes(activeCategoryQuery));-->
-<!--            const nameMatch = (machineQuery === "" || machineName.includes(machineQuery));-->
-<!--            const locationMatch = (locationQuery === "" || machineLocation.includes(locationQuery));-->
-
-<!--            if (categoryMatch && nameMatch && locationMatch) {-->
-<!--                card.style.display = 'flex'; // 'flex' because the card uses flexbox-->
-<!--                machinesFound = true;-->
-<!--            } else {-->
-<!--                card.style.display = 'none'; // Hide card-->
-<!--            }-->
-<!--        });-->
-
-<!--        // Show or hide the "No machines found" message-->
-<!--        noMachinesMessage.style.display = machinesFound ? 'none' : 'block';-->
-<!--    }-->
-
-<!--    // On page load, auto-click "View All" to show all machines by default-->
-<!--    document.addEventListener('DOMContentLoaded', () => {-->
-<!--        const viewAllButton = document.querySelector('.category-card[data-category-query=""]');-->
-<!--        if (viewAllButton) {-->
-<!--            filterByCategory(viewAllButton); // Call the function to set the default state-->
-<!--        }-->
-<!--    });-->
-<!--</script>-->
-
-
-<!--</body>-->
-<!--</html>-->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -612,7 +227,7 @@
 <nav class="navbar">
     <a th:href="@{/}" class="logo">🌾 IndiFarm Rental</a>
     <div class="nav-buttons">
-<!--        <a th:href="@{/farmer/dashboard#subsidy-status}" class="btn btn-primary">Apply for Subsidy</a>-->
+        <!--        <a th:href="@{/farmer/dashboard#subsidy-status}" class="btn btn-primary">Apply for Subsidy</a>-->
         <a th:href="@{/farmer/my-bookings}" class="btn btn-secondary">My Bookings</a>
         <form th:action="@{/logout}" method="post" style="margin: 0;">
             <button type="submit" class="btn btn-logout">Logout</button>
@@ -659,8 +274,9 @@
     <h2 class="results-header">Available Machines</h2>
 
     <div class="machine-grid" id="machine-grid-container">
+        <!-- REMOVED th:if="${m.available}" so all machines are rendered -->
         <div class="machine-card"
-             th:each="m : ${machines}" th:if="${m.available}"
+             th:each="m : ${machines}"
              th:data-machine-type="${m.type}"
              th:data-machine-name="${m.name}"
              th:data-machine-location="${m.location}">
@@ -674,7 +290,13 @@
                 </div>
                 <div class="card-info">
                     <strong>Owner:</strong> <span th:text="${m.owner.name}">Owner Name</span><br/>
-                    <strong>Location:</strong> <span th:text="${m.location}">Location</span>
+                    <strong>Location:</strong> <span th:text="${m.location}">Location</span><br/>
+
+                    <!-- NEW: Status Indicator -->
+                    <strong>Status:</strong>
+                    <span th:text="${m.available} ? 'Available' : 'Unavailable'"
+                          th:style="${m.available} ? 'color:green; font-weight: bold;' : 'color:red; font-weight: bold;'">
+                    </span>
                 </div>
                 <div class="card-price">
                     <div class="price-details">
@@ -690,9 +312,19 @@
                               th:text="${'(Save ₹' + (m.rentalPricePerDay - prices[m.id]) + '!)'}">
                         </span>
                     </div>
-                    <a th:href="@{/farmer/book/{id}(id=${m.id})}" class="btn-book">
+
+                    <!-- Conditional Button Logic -->
+                    <a th:if="${m.available}"
+                       th:href="@{/farmer/book/{id}(id=${m.id})}"
+                       class="btn-book">
                         View Details
                     </a>
+                    <button th:if="${!m.available}"
+                            class="btn-book"
+                            style="background-color: #eee; color: #999; border-color: #ddd; cursor: not-allowed;"
+                            disabled>
+                        Unavailable
+                    </button>
                 </div>
             </div>
         </div>
@@ -741,8 +373,7 @@
 
             // Check if card matches ALL active filters
             const categoryMatch = (activeCategoryQuery === "" || machineType.includes(activeCategoryQuery));
-<!--            const nameMatch = (machineQuery === "" || machineName.includes(machineQuery));-->
-const nameMatch = (machineQuery === "" || machineName.includes(machineQuery) || machineType.includes(machineQuery));
+            const nameMatch = (machineQuery === "" || machineName.includes(machineQuery) || machineType.includes(machineQuery));
             const locationMatch = (locationQuery === "" || machineLocation.includes(locationQuery));
 
             if (categoryMatch && nameMatch && locationMatch) {

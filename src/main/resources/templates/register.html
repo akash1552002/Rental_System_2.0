@@ -297,7 +297,6 @@
 <!--    });-->
 <!--</script>-->
 <script>
-    // --- 4. UPDATE SCRIPT ---
     const roleSelect = document.getElementById('roleSelect');
     const farmerFields = document.getElementById('farmer-fields');
     const profileFields = document.getElementById('profile-fields');
@@ -305,37 +304,72 @@
     // New fields
     const categorySelect = document.getElementById('farmerCategorySelect');
     const proofUploadField = document.getElementById('proof-upload-field');
+    const proofInput = document.getElementById('categoryProofFile');
+
+    // Helper to enable/disable inputs within a container
+    function setInputsDisabled(container, disabled) {
+        const inputs = container.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            if (disabled) {
+                input.setAttribute('disabled', 'disabled');
+            } else {
+                input.removeAttribute('disabled');
+            }
+        });
+    }
 
     // Function to show/hide proof upload
     function toggleProofField() {
         const category = categorySelect.value;
         if (category === 'SMALL_MARGINAL' || category === 'SC_ST') {
             proofUploadField.style.display = 'block';
+            proofInput.removeAttribute('disabled');
         } else {
             proofUploadField.style.display = 'none';
+            proofInput.setAttribute('disabled', 'disabled');
         }
     }
 
     // Function to show/hide main sections
     roleSelect.addEventListener('change', function () {
         var role = this.value;
+
         if (role === 'FARMER') {
             profileFields.classList.add('visible');
             farmerFields.classList.add('visible');
-            toggleProofField(); // Check on role change
+
+            // Enable inputs
+            setInputsDisabled(profileFields, false);
+            setInputsDisabled(farmerFields, false);
+
+            toggleProofField(); // Check category logic
+
         } else if (role === 'OWNER') {
             profileFields.classList.add('visible');
             farmerFields.classList.remove('visible');
-            proofUploadField.style.display = 'none'; // Hide if not farmer
+            proofUploadField.style.display = 'none';
+
+            // Enable profile, DISABLE farmer fields
+            setInputsDisabled(profileFields, false);
+            setInputsDisabled(farmerFields, true);
+
         } else {
+            // Hide all
             profileFields.classList.remove('visible');
             farmerFields.classList.remove('visible');
-            proofUploadField.style.display = 'none'; // Hide if no role
+            proofUploadField.style.display = 'none';
+
+            // Disable all to be safe
+            setInputsDisabled(profileFields, true);
+            setInputsDisabled(farmerFields, true);
         }
     });
 
     // Also check when category itself changes
     categorySelect.addEventListener('change', toggleProofField);
+
+    // Run once on load to ensure correct state (e.g. browser refresh)
+    roleSelect.dispatchEvent(new Event('change'));
 </script>
 
 </body>
